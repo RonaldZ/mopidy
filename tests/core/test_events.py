@@ -10,26 +10,20 @@ from mopidy import core
 from mopidy.internal import deprecation
 from mopidy.models import Track
 
-from tests import dummy_backend
+from tests import config, dummy_backend
 
 
 @mock.patch.object(core.CoreListener, 'send')
 class BackendEventsTest(unittest.TestCase):
 
     def setUp(self):  # noqa: N802
-        config = {
-            'core': {
-                'max_tracklist_length': 10000,
-            }
-        }
-
         self.backend = dummy_backend.create_proxy()
         self.backend.library.dummy_library = [
             Track(uri='dummy:a'), Track(uri='dummy:b')]
 
         with deprecation.ignore():
             self.core = core.Core.start(
-                config, backends=[self.backend]).proxy()
+                config=config(), backends=[self.backend]).proxy()
 
     def tearDown(self):  # noqa: N802
         pykka.ActorRegistry.stop_all()

@@ -10,18 +10,13 @@ import tornado.wsgi
 import mopidy
 from mopidy.http import actor, handlers
 
+from tests import config
+
 
 class HttpServerTest(tornado.testing.AsyncHTTPTestCase):
 
     def get_config(self):
-        return {
-            'http': {
-                'hostname': '127.0.0.1',
-                'port': 6680,
-                'static_dir': None,
-                'zeroconf': '',
-            }
-        }
+        return config()
 
     def get_app(self):
         core = mock.Mock()
@@ -172,20 +167,12 @@ class MopidyRPCHandlerTest(HttpServerTest):
 class HttpServerWithStaticFilesTest(tornado.testing.AsyncHTTPTestCase):
 
     def get_app(self):
-        config = {
-            'http': {
-                'hostname': '127.0.0.1',
-                'port': 6680,
-                'static_dir': None,
-                'zeroconf': '',
-            }
-        }
         core = mock.Mock()
 
         statics = [dict(name='static', path=os.path.dirname(__file__))]
 
         http_server = actor.HttpServer(
-            config=config, core=core, sockets=[], apps=[], statics=statics)
+            config=config(), core=core, sockets=[], apps=[], statics=statics)
 
         return tornado.web.Application(http_server._get_request_handlers())
 
@@ -223,14 +210,6 @@ def wsgi_app_factory(config, core):
 class HttpServerWithWsgiAppTest(tornado.testing.AsyncHTTPTestCase):
 
     def get_app(self):
-        config = {
-            'http': {
-                'hostname': '127.0.0.1',
-                'port': 6680,
-                'static_dir': None,
-                'zeroconf': '',
-            }
-        }
         core = mock.Mock()
 
         apps = [{
@@ -239,7 +218,7 @@ class HttpServerWithWsgiAppTest(tornado.testing.AsyncHTTPTestCase):
         }]
 
         http_server = actor.HttpServer(
-            config=config, core=core, sockets=[], apps=apps, statics=[])
+            config=config(), core=core, sockets=[], apps=apps, statics=[])
 
         return tornado.web.Application(http_server._get_request_handlers())
 

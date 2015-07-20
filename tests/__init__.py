@@ -14,6 +14,36 @@ def path_to_data_dir(name):
     return os.path.join(path, name)
 
 
+def config(merge_config=dict()):
+    config = {
+        'core': {
+            'max_tracklist_length': 10000,
+        },
+        'http': {
+            'hostname': '127.0.0.1',
+            'port': 6680,
+            'static_dir': None,
+            'zeroconf': '',
+        },
+        'local': {
+            'media_dir': path_to_data_dir(''),
+            'data_dir': path_to_data_dir(''),
+            'playlist_dir': b'',
+            'library': 'json',
+        },
+        'm3u': {
+            'playlists_dir': path_to_data_dir(''),
+        },
+        'mpd': {
+            'password': None,
+        },
+    }
+
+    config.update(merge_config)
+    
+    return config
+
+
 class IsA(object):
 
     def __init__(self, klass):

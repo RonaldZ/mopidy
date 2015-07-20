@@ -13,17 +13,12 @@ from mopidy.m3u import actor
 from mopidy.m3u.translator import playlist_uri_to_path
 from mopidy.models import Playlist, Track
 
-from tests import dummy_audio, path_to_data_dir
+from tests import dummy_audio, path_to_data_dir, config
 from tests.m3u import generate_song
 
 
 class M3UPlaylistsProviderTest(unittest.TestCase):
     backend_class = actor.M3UBackend
-    config = {
-        'm3u': {
-            'playlists_dir': path_to_data_dir(''),
-        }
-    }
 
     def setUp(self):  # noqa: N802
         self.config['m3u']['playlists_dir'] = tempfile.mkdtemp()
@@ -31,7 +26,7 @@ class M3UPlaylistsProviderTest(unittest.TestCase):
 
         audio = dummy_audio.create_proxy()
         backend = actor.M3UBackend.start(
-            config=self.config, audio=audio).proxy()
+            config=config(), audio=audio).proxy()
         self.core = core.Core(backends=[backend])
 
     def tearDown(self):  # noqa: N802
